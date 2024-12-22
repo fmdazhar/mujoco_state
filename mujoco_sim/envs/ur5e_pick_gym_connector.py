@@ -340,28 +340,6 @@ class ur5ePegInHoleGymEnv(MujocoGymEnv):
             step_count += 1
         print(f"Resetting environment after {step_count} steps.")
 
-        # plate_pos = self._data.geom("plate").xpos
-        # plate_size = self._model.geom("plate").size
-        # connector_radius = self._model.geom("connector_back").size # Assuming the first size is the radius
-
-        # plate_bounds = [
-        #     [plate_pos[0] - plate_size[0] - connector_radius[0], plate_pos[1] - plate_size[1] - connector_radius[0]],
-        #     [plate_pos[0] + plate_size[0] + connector_radius[1], plate_pos[1] + plate_size[1] + connector_radius[1]],
-        # ]
-
-        # # Sample connector position avoiding the plate bounds
-        # while True:
-        #     connector_xy = np.random.uniform(*_SAMPLING_BOUNDS)
-        #     if not (
-        #         plate_bounds[0][0] <= connector_xy[0] <= plate_bounds[1][0]
-        #         and plate_bounds[0][1] <= connector_xy[1] <= plate_bounds[1][1]
-        #     ):
-        #         break
-        # self._data.jnt("connector").qpos[:3] = (*connector_xy, self._connector_z)
-
-        # # Reset mocap body to home position.
-        # self._data.mocap_pos[0] = (*connector_xy + 0.01, self._connector_z + 0.025)
-
         # Reset the environment time to zero
         obs = self._compute_observation()
 
@@ -494,13 +472,11 @@ class ur5ePegInHoleGymEnv(MujocoGymEnv):
         gravity_force = -self._model.opt.gravity * total_mass
         wrist_force = cfrc_int[3:] - gravity_force
         obs["state"]["ur5e/wrist_force"] = wrist_force.astype(np.float32)
-        print("obs:", obs["state"]["ur5e/wrist_force"])
 
         # wrist_torque = self._data.sensor("ur5e/wrist_torque").data
         dif = self._data.site_xpos[self._attatchment_id] - self._data.subtree_com[rootid]
         wrist_torque = cfrc_int[:3] - np.cross(dif, cfrc_int[3:])
         obs["state"]["ur5e/wrist_torque"] = wrist_torque.astype(np.float32)
-        print("obs:", obs["state"]["ur5e/wrist_torque"])
 
         connector_pos = self._data.sensor("connector_head_pos").data.astype(np.float32)
         connector_ori_quat = self._data.sensor("connector_head_quat").data.astype(np.float32)

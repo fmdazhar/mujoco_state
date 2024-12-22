@@ -5,7 +5,10 @@ import mujoco
 import mujoco.viewer
 import numpy as np
 import mujoco_sim
+import glfw
 
+# glfw init
+glfw.init()
 
 env = gymnasium.make("ur5ePegInHoleGymEnv_easy-v0", render_mode="human")
 # env = gymnasium.make("ur5ePegInHoleGymEnv_medium-v0", render_mode="human")

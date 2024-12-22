@@ -38,7 +38,6 @@ class CustomObsWrapper(gymnasium.ObservationWrapper):
         observation["state"] = {
             key: observation["state"][key] for key in self.keys_to_keep
         }
-        # print(observation["state"])
         return observation
 
 import gymnasium 
